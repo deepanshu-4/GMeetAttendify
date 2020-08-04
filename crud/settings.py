@@ -25,7 +25,7 @@ SECRET_KEY = 'p9a2w1llb-ntc*fxrn9qkzz5v=01-&p&tp&hr9n)%fu-hmbg_6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://dkcrud.herokuapp.com/']
 
 
 # Application definition
