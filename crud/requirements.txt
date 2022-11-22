@@ -15,7 +15,7 @@ matplotlib==3.2.1
 numpy==1.18.4
 pandas==1.0.4
 pefile==2019.4.18
-Pillow==7.2.0
+Pillow==9.3.0
 psycopg2==2.8.5
 py3dns==3.2.1
 pycparser==2.20
