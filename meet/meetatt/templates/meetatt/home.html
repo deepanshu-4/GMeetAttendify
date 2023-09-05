@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- <meta http-equiv="refresh" content="5"> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="http://deepanshukaushik.me/index.css">
+  <title></title>
+  
+<style>
+.lara a{
+  color:blue;
+  font-size:1.rem;
+} 
+.lara a:hover{
+  color:blue;
+  font-size:1.1rem;
+  background-color: azure;
+  padding:1.5rem;
+} 
+ </style> 
+</head>
+<body>
+  <div>
+    {%for mes in messages%}
+<div class="alert alert-success alert-dismissible">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong>{{mes}}</strong>
+</div>
+{%endfor%}
+
+    <div>
+      <nav class="nav">
+        <ul>
+          <li><h1 class="tp"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmYmI76cGZcLAvVUEcgjO725_G0Jdqn5xNkg&usqp=CAU" class="image--cover"></h1></li>
+          <li><h1 class="tp">Google Meet Attendence Management </h1></li>
+          {%if ym != ""%}
+
+
+           <div>
+            <li class="lar"><a href="/logout">Logout</a></li>
+           <li><h1  style="float:right;padding:1.7rem 1rem;"><img src="https://static8.depositphotos.com/1010782/858/i/950/depositphotos_8581584-stock-photo-fire-alphabets-d.jpg" class="image-cover tpo">
+            <p style="font-size: 1.3rem; text-align: center;" class="lara"><a href="/resetutil" >{{request.user}}</a></p>
+           </h1></li>   
+                    </div>
+                    
+          
+           
+          {%else%}
+           
+          <li class="lar"><a href="/login">Login</a></li>
+          <li class="lar"><a href="/register">Register</a></li>
+          {%endif%}
+
+        </ul>
+      </nav>
+        
+    </div>
+
+        
+    <div class="im">
+      <img src="https://chromeunboxed.com/wp-content/uploads/2020/09/Attendance-for-google-meet-extension.jpg">
+        <!-- <div class="centered">  <h1>Welcome to our website By using our site you can maintain the attendence of students easily.</h1></div> -->
+    </div>
+    
+    <!-- <div class="im">
+      <div class="centered">  <h1>Welcome to our website</h1></div>
+    </div>
+     -->
+    <hr><hr>
+    <nav class ="snav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="#mn">About</a></li>
+          
+          {%if ym != ""%}
+          <li><a href="/main">Dashboard</a></li>
+          <li class="mb"><a href="/logout">Logout</a></li>
+          {%else%}
+          <li class="mb"><a href="/register">Register</a></li>
+            <li class="mb"><a href="/login">Login</a></li>
+          {%endif%}
+        </ul>
+    </nav>
+
+    <div id="mn">
+      <div class="main">
+        <p><img src="https://chromeunboxed.com/wp-content/uploads/2020/09/Attendance-for-google-meet-extension.jpg"style="width:30%;height:12rem;margin-left:1.5rem;"> 
+        <ol class="ol">
+        <li>Download the chrome extension<strong>(Google Meet Attendence Collector)</strong>
+        <li>Generate the pdf containing the studnet name using extension</li> 
+        <li>Register on website</li>
+        <li>After login add the students</li>   
+        <li>Upload the pdf. Then attendence will automatically stored</li>
+        </ol></p>
+      </div>
+      <div class="main">  
+        <p><img src="https://miro.medium.com/max/1838/1*1HiMZ1JFtQ2vaXL9z8dkDg.jpeg"style="width:30%;height:12rem;margin-left:1.5rem;"></p>
+        <a href="#">Extension Link</a>
+
+        <ol class="ol">
+        <li>Download the chrome extension<strong>(Google Meet Attendence Collector)</strong>
+        <li>Generate the pdf containing the studnet name using extension</li> 
+        <li>Extension can fetch name of the student from google meet</li>
+        <li>It can also fetch data from chat window.So by typing rno in chat window it can easily maintained the attendence by rno</li>   
+        <li>Upload the pdf. Then attendence will automatically stored</li>
+        </ol>
+      </div>
+      <div class="main">
+        <p>By using our site you can maintain the attendence of studenet easily</p>
+      </div>
+    </div>
+    <footer>
+          Designed and Developed by Deepanshu Kaushik 
+
+    </footer> 
+       
+  </div>
+
+
+</body>
+</html>

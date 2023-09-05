@@ -1,0 +1,40 @@
+<html>
+<title></title>
+
+<head>
+    {% comment %}
+    <meta http-equiv="refresh" content="0;URL='http://www.google.com/'" />
+    {% endcomment %} {% comment %}
+    <meta http-equiv="refresh" content="1200" />
+    {% endcomment %}
+    <style>
+        pre {
+            display: inline;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="{%url 'meetatt:main' %}">GO to back</a>
+    <center>
+        <fieldset>
+            <form>
+                <input required type="text" placeholder="enter total no of Students" name="i" />
+            </form>
+
+            <form class="fo" action="" method="POST">
+                {% csrf_token %}
+                <pre><h3>Name              Rno </h3></pre>
+
+                {%for i in y %}
+                <pre><input required placeholder="name" type="text" name="{{i}}">              <input required placeholder="rno" type="text" name="rno{{i}}"></pre>
+                <br />
+                <br />
+                {%endfor%}
+                <button type="submit">Submit</button>
+            </form>
+        </fieldset>
+    </center>
+</body>
+
+</html>

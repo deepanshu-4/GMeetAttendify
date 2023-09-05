@@ -1,0 +1,39 @@
+<html>
+<head></head>
+<body>
+<center>
+<h1>otp sent</h1>
+
+<form action="{%url 'meetatt:checkotp'%}" method="post" >
+ {% csrf_token %}
+
+<table>
+<tr ><td>Enter name you want:</td>
+<td><input type="text" class="ot"  name="name" placeholder="Enter your name" required>
+</td>
+</tr>
+<br>
+<tr><td>Enter Password:</td>
+<td><input  class="ot" type="password" name="Password" placeholder="Enter password" required></td>
+</tr>
+<br>
+<tr><td>Confirm Password:</td>
+<td><input  class="ot" type="password" name=" Confirm Password" placeholder="confirm password" required></td>
+</tr>
+<br>
+<tr><td>Enter otp:</td>
+<td><input   class="ot" type="text" name="otp" required placeholder="Enter otp"> </td>
+</tr>
+<br>
+<tr>
+<td><Button type="submit" >Check Otp</td></tr>
+</tr>
+</table>
+</form>
+</center>
+</body>
+
+
+</html>
+
+

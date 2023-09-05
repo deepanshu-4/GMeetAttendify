@@ -1,0 +1,15 @@
+<html>
+<head></head>
+<body>
+{% for i in rno %}
+<h3>{{i}}</h3>
+{% endfor %}
+<br>
+{% for i in clas %}
+ {%if request.user == i.tid.username%}
+<h3>hello {{request.user}} {{ i.tid.username }} {{i.rno}} {{i.name}} {{i.mark}}</h3>
+{% endif %}
+{% endfor %}
+
+</body>
+</html>
