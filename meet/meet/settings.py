@@ -28,7 +28,7 @@ ENCRYPT_KEY=b'S3LGKQ0kI2MljlMm8dksok9lPU69h_nGUFlOP7k3fVQ='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['gMeetAttendify','127.0.0.1']
+ALLOWED_HOSTS = ['gmeetattendify.onrender.com','127.0.0.1']
 
 
 # Application definition
