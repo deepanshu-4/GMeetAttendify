@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import  Postpdf,Class,Contact
+from .models import  Postpdf,Folder,Class,Contact
 # Register your models here.
 @admin.register(Postpdf)
 class PostpdfAdmin(admin.ModelAdmin):
@@ -9,3 +9,4 @@ class ClassAdmin(admin.ModelAdmin):
     pass
 
 admin.site.register(Contact)
+admin.site.register(Folder)

@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .encryption_util import *
-from meetatt.models import Postpdf,Class,Contact
+from meetatt.models import Postpdf, Class, Contact, Folder
 from pdfminer import high_level
 import re
 from django.core.mail import send_mail
-from django.contrib.auth import authenticate, login,logout
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 import random
 from django.http import HttpResponse
@@ -25,44 +25,34 @@ from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
-# def print(request):
-#     return render(request,'meetatt/index.html')
 def index(request):
-    request.session['ym']="";
-    print(request.session['ym'])
-    request.session['lv']=0
-    if request.user.is_anonymous==False:
-        request.session['ym']=str(request.user)
-        ym=request.session['ym']
-        return render(request,"meetatt/home.html",{
-            'ym':ym,
+    request.session['lv'] = 0
+    if request.user.is_anonymous == False:
+        print('->',request.user)
+        return render(request, "meetatt/home.html", {
+            'user': str(request.user),
         })
     else:
-        request.session['ym']="";
-        return render(request,"meetatt/home.html",{
-            'ym':request.session['ym']
+        return render(request, "meetatt/home.html", {
+            'user': ''
         })
 
-@login_required
-def printk(request):
 
-        # fie = request.FILES.get('file')
-        # fie=request.GET.get('file') it is wrong
-        # y=request.user
+@login_required
+def main(request):
     clas = Class.objects.all().order_by('rno')
     userr = User.objects.get(username=request.user)
-    # print(userr.username)
-        # post = pPost.objects.filter(id=id)
-    return render(request,"meetatt/upload.html",{
-        'clas':clas,
-        'user':userr
+    return render(request, "meetatt/upload.html", {
+        'clas': clas,
+        'user': userr
     })
 
-def printa(request):
-    if  True:
+
+def printa(request, pk):
+    if True:
         # fie=request.GET.get('file')
         fie = request.FILES.get('file')
-        print("my file ",fie)
+        print("my file ", fie)
         # local_pdf_filename = "../media/files/"+str(fie)
         # pages = [0] # just the first page
 
@@ -70,11 +60,10 @@ def printa(request):
         # print(extracted_text.split('\n'))
         # fie=request.GET.get('file') it is wrong
         # y=request.user
-        
         # post = pPost.objects.filter(id=id)
-        pdf=Postpdf(pdf=fie)
+        pdf = Postpdf(pdf=fie)
         pdf.save()
-        s=Postpdf.objects.filter(pdf=fie)
+        s = Postpdf.objects.filter(pdf=fie)
         # print(s)
         # ds=Postpdf.objects.get(pdf=fie)
         # myid=ds.id
@@ -82,99 +71,64 @@ def printa(request):
         num = Postpdf.objects.all()
         clas = Class.objects.all()
         for i in num:
-            x=i.pdf.path
-            sid=i.id
-        print(x,sid)    
-        request.session['rno']=[]
-        request.session['name']=[] 
-        
+            x = i.pdf.path
+            sid = i.id
+        print(x, sid)
+        request.session['rno'] = []
+        request.session['name'] = []
+
         local_pdf_filename = x
-        request.session['ctn']=0
+        request.session['ctn'] = 0
         while True:
-            pages = [request.session['ctn']] # just the first page
-            request.session['ctn']=request.session['ctn']+1
-            extracted_text = high_level.extract_text(local_pdf_filename, "", pages)
-            text=extracted_text.split('\n')
-            if(len(text)==1):
+            pages = [request.session['ctn']]  # just the first page
+            request.session['ctn'] = request.session['ctn']+1
+            extracted_text = extract_text(local_pdf_filename, "", pages)
+            text = extracted_text.split('\n')
+            if (len(text) == 1):
                 break
             for i in text:
-                z=re.findall("[0-9]{11}",i)
-                if(len(z)>0):
+                z = re.findall("[0-9]{11}", i)
+                if (len(z) > 0):
                     request.session['rno'].append(z)
-                z=re.findall("[A-z]",i)
-                
-                if(len(z)>0 and "".join(z[-2:])!='AM'):
-                        request.session['name'].append("".join(z))
+                z = re.findall("[A-z]", i)
+                if (len(z) > 0 and "".join(z[-2:]) != 'AM'):
+                    z = "".join(z)
+                    z = z.lower()
+                    request.session['name'].append(z)
 
-                elif(len(z)>0 and "".join(z[-2:])=='AM'):
-                    
-                    request.session['name'].append("".join(z[:-2]))
+                elif (len(z) > 0 and "".join(z[-2:]) == 'AM'):
+                    z = "".join(z[:-2])
+                    z = z.lower()
+                    request.session['name'].append(z)
         print(request.session['name'])
         for i in clas:
-            s=[i.rno]
-            k=i.name
-            k=k.replace(" ", "")
-            print(k)
-            d=i.tid.username
-            if (s in request.session['rno'] and d==str(request.user)):
-                
-                i.mark=i.mark+1
+            s = [i.rno]
+            k = i.name
+            k = k.replace(" ", "")
+            k = k.lower()
+            # print(k)
+            d = i.tid.username
+            c_id = i.cid.id
+            if (s in request.session['rno'] and d == str(request.user) and c_id == int(decrypt(pk))):
+                i.mark = i.mark+1
                 # print(i.mark)
                 i.save()
-            if (k in request.session['name'] and d==str(request.user)):
-                i.smark=i.smark+1
+            if (k in request.session['name'] and d == str(request.user) and c_id == int(decrypt(pk))):
+                i.smark = i.smark+1
                 i.save()
-            
+
         # print(rno,name)
         # place = Postpdf.objects.get(pdf=fie)
         # print(place.id)
         instance = Postpdf.objects.get(id=sid)
         instance.delete()
-        return redirect('/main')   
-        return render(request,"meetatt/display.html",{
-            "rno":rno,
-            "name":name,
-            "clas":clas
-        })    
+        return redirect('/detail/'+str(pk))
+        return render(request, "meetatt/display.html", {
+            "rno": rno,
+            "name": name,
+            "clas": clas
+        })
 
-
-
-#for login
-def fun(c):
-    a=random.randint(25000,90000)
-    s=str(a)
-    #gmail_user=a
-    gmail_user= 'csecodeshef18@gmail.com'
-    gmail_password = 'csecodeshef18@gmail'
-    sent_from = gmail_user
-    to = [c]
-    subject = "Your otp"
-    #email_text = ntext[0]+"\n"+ntext[1]+"\n"+ntext[2]
-    a=random.randint(25000,90000)
-    s=str(a)
-    email_text=a
-    message = 'Subject: {}\n\n{}'.format(subject,email_text)
-    try:
-
-        # a=random.randint(25000,90000)
-        # s=str(a)
-        # send_mail(
-        # 'Your OTP',
-        # s,
-        # 'csecodeshef18@gmail.com',
-        # [c],
-        # fail_silently=False,
-        # )
-        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-        server.ehlo()
-        server.login(gmail_user, gmail_password)
-        server.sendmail(sent_from, to,message)
-        server.close()
-
-        return 1,s
-    except Exception as e:
-        
-        return 0,-5
 
 def register(request):
     logout(request)
@@ -182,95 +136,39 @@ def register(request):
         request.session["name"] = ""
         request.session["email"] = ""
         request.session["phno"] = ""
-        request.session["otp"] = ""
-    return render(request,'meetatt/index.html')
-    
-        
+    return render(request, 'meetatt/index.html')
 
-def otp(request):
-    if request.method=="POST":
-        name=request.POST.get('username')
-        email=request.POST.get('email')
-        phno=request.POST.get('phno')
-        request.session["uname"] = name
-        request.session["email"] = email
-        request.session["phno"] = phno
-        print(email)
-        # if User.objects.filter(email = cleaned_info['username']).exists():
-        num_results = Contact.objects.filter(email = email).count()
-        num_results2 = User.objects.filter(username=name).count()
-        print(num_results2)
-        if(num_results>=1):
-            messages.success(request,"email already exist")  
+
+def validate_regestration(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        phno = request.POST.get('phno')
+        password = request.POST.get('Password')
+        request.session['passw'] = password
+        num_results = Contact.objects.filter(email=email).count()
+        num_results2 = User.objects.filter(username=username).count()
+        if (num_results >= 1):
+            messages.success(request, "email already exist")
             return HttpResponseRedirect(request.path_info)
-        if(num_results2>=1):
-            messages.success(request,"user already exist")  
+        if (num_results2 >= 1):
+            messages.success(request, "user already exist")
             return HttpResponseRedirect(request.path_info)
-        # x,y=fun(email)
-        x,y=(1,234)
-        print(y)
-        request.session["otp"]=y
-        request.session['nvar']=0;
-        if(int(y)<0):
-            request.session["otp"]=""
-
-        if(x!=1):
-            messages.success(request,"Wrong credentials")  
-            return HttpResponseRedirect(request.path_info)
-
-
-        # contact=Contact(name=name,email=email,phoneno=phno,message=message,date=datetime.today())
-        # contact.save()
-        request.session['var']=1;
-    
-        return redirect('/newf') 
-    # return render(request,'data/otp.html',{
-        #     "y":1
-        #     }) 
-    # if request.method=="POST":
-    #     return render(request,'data/otp.html'
-    else:
-        return redirect('/')
-    return redirect('/')
-def newf(request):
-    try:
-        if request.session['var']:
-            request.session['var']=0;
-            return render(request,'meetatt/otp.html')
-        return redirect('/')
-    except:
-        return redirect('/')
-
-def checkotp(request):
-    if request.method=="POST":
-        name=request.POST.get('name')
-        password=request.POST.get('Password')
-        request.session['passw']=password
-        # confirmpassword=request.POST.get('conpass')
-        otp=request.POST.get('otp')
-        username=request.session["uname"]
-        if(request.session["otp"]==otp):
-            try:
-                contact=Contact(username=username,name=name,email=request.session["email"],phoneno=request.session["phno"],date=datetime.today())
-                user = User.objects.create_user(username, request.session["email"], password)
-                contact.save()
-                messages.success(request,"account verified")
-                u = User.objects.get(username=username)
-                u.set_password(password)
-                u.save()
-                del request.session['email']
-                request.session['otp']="-112s6a"
-                return redirect('/')
-            except:
-                messages.success(request,"user exist")
-                request.session['otp']="-112s6a"
-                return redirect('/')
-        else:
-            messages.success(request,"account not  verified")
-            # del request.session['otp']
-            request.session['otp']="-112s6a"
+        try:
+            contact = Contact(username=username, name=name,
+                              email=email, phoneno=phno, date=datetime.today())
+            user = User.objects.create_user(
+                username, request.session["email"], password)
+            contact.save()
+            messages.success(request, "account verified")
+            u = User.objects.get(username=username)
+            u.set_password(password)
+            u.save()
             return redirect('/')
-
+        except:
+            messages.success(request, "account not  verified")
+            return redirect('/')
     else:
         return redirect('/')
 
@@ -280,31 +178,25 @@ def log_in(request):
     #     logout(request)
     #     login(request, user)
     if request.user.is_anonymous:
-            
-
-        if(request.method=="POST"):
-            username=request.POST.get('logname')
-            password=request.POST.get('pasword')  
+        if (request.method == "POST"):
+            username = request.POST.get('logname')
+            password = request.POST.get('pasword')
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                  
                 login(request, user)
-                if(request.session['lv']==1):
-                    request.session['lv']=0
-                    return redirect('/printk')
-                messages.success(request,"Successfully logged in")     
+                messages.success(request, "Successfully logged in")
                 return redirect('/')
                 # Redirect to a success page.
-                
-            else:
-                messages.success(request,"not valid user name or password") 
-                return redirect('/')
 
+            else:
+                messages.success(request, "not valid user name or password")
+                return redirect('/')
                 # Return an 'invalid login' error message.
-        return render(request,'meetatt/login.html')      
+        return render(request, 'meetatt/login.html')
     else:
-        messages.success(request,"logged in") 
-        return redirect('/')     
+        messages.success(request, "logged in")
+        return redirect('/')
+
 
 def log_out(request):
     logout(request)
@@ -312,8 +204,67 @@ def log_out(request):
 
 
 @login_required
-def quiz(request):
-    print('--->');
+def head(request):
+    if (request.method == 'POST'):
+        tit = request.POST.get('head')
+        post = get_object_or_404(Contact, username=str(request.user))
+        x = Folder(title=tit, fid=post)
+        x.save()
+        request.session['head'] = 1
+        return redirect('/temphead')
+
+    else:
+        num = Contact.objects.filter(username=str(request.user))
+        post = get_object_or_404(num, username=str(request.user))
+        x = Folder.objects.filter(fid=post)
+        lt = Folder.objects.filter(fid=post).values('id', 'title')
+        request.session['l'] = []
+        l = request.session['l']
+        for i in lt:
+            i['encrypt_key'] = encrypt(i['id'])
+            i['title'] = i['title']
+            l.append(i)
+        print(l)
+        # x=Folder.objects.filter(fid=request.user);
+        return render(request, 'meetatt/head.html', {
+            'folder': l
+        })
+
+
+@login_required
+def temphead(request):
+    try:
+        num = Contact.objects.filter(username=str(request.user))
+        post = get_object_or_404(num, username=str(request.user))
+        x = Folder.objects.filter(fid=post)
+        x = Folder.objects.filter(fid=post)
+        lt = Folder.objects.filter(fid=post).values('id', 'title')
+        request.session['l'] = []
+        l = request.session['l']
+        for i in lt:
+            i['encrypt_key'] = encrypt(i['id'])
+            i['title'] = i['title']
+            l.append(i)
+        print(l)
+
+        # x=Folder.objects.filter(fid=request.user);
+        if request.session['head'] == 1:
+            return render(request, 'meetatt/head.html', {
+                'folder': l
+            })
+    except:
+        num = Contact.objects.filter(username=str(request.user))
+        post = get_object_or_404(num, username=str(request.user))
+        x = Folder.objects.filter(fid=post)
+        # x=Folder.objects.filter(fid=request.user);
+        return render(request, 'meetatt/head.html', {
+            'folder': x
+        })
+
+
+@login_required
+def quiz(request,pk):
+    pk=int(decrypt(pk))
     request.session['x']=request.GET.get('i')
     request.session['l']=[]
     if(request.session['x'] is None):
@@ -326,22 +277,24 @@ def quiz(request):
         # print(zl)
     try:
         cm=Contact.objects.get(username=str(request.user))
+        post = get_object_or_404(Folder,id = pk)
         for i in range(len(request.session['c'])):
+
             if(request.method=="POST"):
                 print("POST")
                 request.session['z']=request.POST.get(str(request.session['c'][i]))
                 request.session['rno']=request.POST.get("rno"+str(request.session['c'][i]))
-                clas=Class(name=request.session['z'],rno=request.session['rno'],tid=cm,mark=0)
+                print(request.session['z'],request.session['rno'])
+                clas=Class(name=request.session['z'],rno=request.session['rno'],tid=cm,cid=post,mark=0,smark=0)
                 clas.save()
                 print("save the data")
             else:
                 break  
         if(request.method=="POST"):      
-            return redirect('/main')    
+            return redirect('/head')    
         # print(l)
         
     except: 
-        print('error')
         return redirect('/main')
                
     return render(request,"meetatt/newstudent.html",{
@@ -349,152 +302,15 @@ def quiz(request):
     })
  
 
-@login_required
-def resetutil(request):
-    if(request.method=="POST"):
-            y=str(request.user)
-            print(y)
-            u = User.objects.get(username=y)
-            password=request.POST.get('opas')
-            npas=request.POST.get('rpas')  
-            user = authenticate(request, username=y, password=password)
-            if user is not None:
-                print(password,npas)
-                hashv=encrypt(y)+"/"+encrypt(password)+"/"+encrypt(npas)
-                weblink="http://127.0.0.1:8000/reset/"+hashv
-                print(weblink)
-                gmail_user= 'csecodeshef18@gmail.com'
-                gmail_password = 'csecodeshef18@gmail'
-                sent_from = gmail_user
-                to = [u.email]
-                subject = "Password reset link"
-                #email_text = ntext[0]+"\n"+ntext[1]+"\n"+ntext[2]
-                
-                email_text=weblink
-                message = 'Subject: {}\n\n{}'.format(subject,email_text)
-                try:
 
-                    # a=random.randint(25000,90000)
-                    # s=str(a)
-                    # send_mail(
-                    # 'Your OTP',
-                    # s,
-                    # 'csecodeshef18@gmail.com',
-                    # [c],
-                    # fail_silently=False,
-                    # )
-                    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-                    server.ehlo()
-                    server.login(gmail_user, gmail_password)
-                    server.sendmail(sent_from, to,message)
-                    server.close()
-                    messages.success(request,"Reset request send to mail")
-                    return redirect('/') 
-                except Exception as e:
-                    messages.success(request,"Some error occured in sending mail")
-                    return redirect('/')
-                messages.success(request,"in")     
-                return redirect('/')
-                # Redirect to a success page.
-                
-            else:
-                messages.success(request,"not valid password") 
-                return redirect('/')
-    return render(request,"meetatt/reset.html")        
-
-
-def reset(request,a,b,c):
-    try:
-        a=decrypt(a)
-        b=decrypt(b)
-        c=decrypt(c)
-        print("values",a,b,c)
-        u = User.objects.get(username=str(request.user))
-        user = authenticate(request, username=str(request.user), password=b)
-        print(user)
-        if user is not None:
-            u.set_password(c)
-            u.save()
-            messages.success(request,"Password change successhul") 
-            return redirect('/')
-        else:
-            messages.success(request,"Not allowed") 
-            return redirect('/')
-    except:
-        messages.success(request,"Not allowed") 
-        return redirect('/')
-
-
-def forget(request):
-    if request.method=="POST":
-        a=request.POST.get('flogin')
-        b=request.POST.get('femail')
-        c=request.POST.get('fpass')
-        u = User.objects.get(username=a)
-        if(u.email==b):
-            if True:
-                hashv=encrypt(a)+"/"+encrypt(b)+"/"+encrypt(c)
-                weblink="http://127.0.0.1:8000/changepassword/"+hashv
-                print(weblink)
-                gmail_user= 'csecodeshef18@gmail.com'
-                gmail_password = 'csecodeshef18@gmail'
-                sent_from = gmail_user
-                to = [u.email]
-                subject = "Change the Password "
-                #email_text = ntext[0]+"\n"+ntext[1]+"\n"+ntext[2]
-                
-                email_text=weblink
-                message = 'Subject: {}\n\n{}'.format(subject,email_text)
-                try:
-
-                    # a=random.randint(25000,90000)
-                    # s=str(a)
-                    # send_mail(
-                    # 'Your OTP',
-                    # s,
-                    # 'csecodeshef18@gmail.com',
-                    # [c],
-                    # fail_silently=False,
-                    # )
-                    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-                    server.ehlo()
-                    server.login(gmail_user, gmail_password)
-                    server.sendmail(sent_from, to,message)
-                    server.close()
-                    messages.success(request,"Reset request send to mail")
-                    return redirect('/') 
-                except Exception as e:
-                    messages.success(request,"Some error occured in sending mail")
-                    return redirect('/')     
-                return redirect('/')
-                # Redirect to a success page.
-                
-            else:
-                messages.success(request,"not valid password") 
-                return redirect('/')
-
-
-
-    return render(request,'meetatt/forget.html')
-
-
-
-def forgetutil(request,a,b,c):
-    try:
-
-        a=decrypt(a)
-        b=decrypt(b)
-        c=decrypt(c)
-        # print("values",a,b,c)
-        u = User.objects.get(username=a)
-        if True:
-            u.set_password(c)
-            u.save()
-            messages.success(request,"Password change successful") 
-            return redirect('/')
-        else:
-            messages.success(request,"Not allowed") 
-            return redirect('/')
-    except:
-        messages.success(request,"Not allowed") 
-        return redirect('/')    
+def detail(request, pk):
+    xpk = int(decrypt(pk))
+    # pk=encrypt(pk)
+    clas = Class.objects.all().order_by('rno')
+    userr = User.objects.get(username=request.user)
+    return render(request, "meetatt/upload.html", {
+        'clas': clas,
+        'user': userr,
+        'pk': pk,
+        'xpk': xpk
+    })

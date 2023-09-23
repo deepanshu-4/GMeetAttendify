@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <style type="text/css">
+      .flex-container {
+        display: flex;
+        flex-flow: row wrap;
+
+        /* Then we define how is distributed the remaining space */
+        justify-content: space-evenly;
+
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+
+      .flex-item {
+        background: grey;
+        padding: 5px;
+        min-width: 40%;
+        min-height: 150px;
+        margin-top: 10px;
+        color: white;
+        font-weight: bold;
+        font-size: 2.2em;
+        text-align: center;
+        word-wrap: break-word;
+      }
+      .flex-item:hover {
+        box-shadow: 15px 5px 15px black;
+      }
+
+      label {
+        margin: auto;
+        font-size: 2rem;
+        letter-spacing: 0.2rem;
+        margin-left: 40px;
+      }
+
+      button {
+        text-align: center;
+        margin-top: 10px;
+        margin-left: 40px;
+        padding: 5px;
+      }
+      input {
+        border: dotted;
+        min-width: 40%;
+        font-size: 20px;
+        margin-left: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="{%url 'meetatt:index' %}">GO to back</a><br />
+    <form action="{% url 'meetatt:head' %}" method="POST">
+      {% csrf_token %}
+      <label>Enter your class Name </label
+      ><input required type="text" name="head" id="txthead" /> <br /><br />
+
+      <button>Create new Class</button>
+      <!-- {{x}} -->
+    </form>
+    <br />
+    <fieldset>
+      <ul class="flex-container">
+        {% for i in folder %}
+        <li class="flex-item">
+          <a href="{% url 'meetatt:detail' i.encrypt_key %}">{{i.title}}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </fieldset>
+  </body>
+</html>

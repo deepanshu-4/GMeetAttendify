@@ -65,16 +65,16 @@ th, td {
 </head>
 <body>
 <h4> Hello {{user.username}} </h4>
-<a href="{%url 'meetatt:index' %}" >GO to back</a>
+<a href="{%url 'meetatt:head' %}" >GO to back</a>
 
 <center>
-<form action="{%url 'meetatt:printa' %}" method="POST" enctype="multipart/form-data">
+<form action="{%url 'meetatt:printa' pk  %}" method="POST" enctype="multipart/form-data">
        {% csrf_token %}
         <input type="file" required name="file">
         <br>
         <br>
         <button  class="btn btn-primary btn-md">Upload PDF</button>
-    <h2><a href="{%url 'meetatt:quiz' %}" >Add students</a></h2>
+    <h2><a href="{% url 'meetatt:quiz' pk %}" >Add students</a></h2>
     </form>
     
     </center>
@@ -88,7 +88,9 @@ th, td {
 
 
     {% for i in clas %}
-        {%if user.username == i.tid.username %}
+         
+        {% if user.username == i.tid.username and i.cid.id == xpk  %}
+
             <tr>
                 <td>{{i.rno}}</td>
                 <td>{{i.name}}</td>
