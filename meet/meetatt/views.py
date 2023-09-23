@@ -50,24 +50,10 @@ def main(request):
 
 def printa(request, pk):
     if True:
-        # fie=request.GET.get('file')
         fie = request.FILES.get('file')
-        print("my file ", fie)
-        # local_pdf_filename = "../media/files/"+str(fie)
-        # pages = [0] # just the first page
-
-        # extracted_text = high_level.extract_text(local_pdf_filename, "", pages)
-        # print(extracted_text.split('\n'))
-        # fie=request.GET.get('file') it is wrong
-        # y=request.user
-        # post = pPost.objects.filter(id=id)
         pdf = Postpdf(pdf=fie)
         pdf.save()
         s = Postpdf.objects.filter(pdf=fie)
-        # print(s)
-        # ds=Postpdf.objects.get(pdf=fie)
-        # myid=ds.id
-        # print(myid)
         num = Postpdf.objects.all()
         clas = Class.objects.all()
         for i in num:
@@ -76,33 +62,34 @@ def printa(request, pk):
         print(x, sid)
         request.session['rno'] = []
         request.session['name'] = []
-
         local_pdf_filename = x
         request.session['ctn'] = 0
         while True:
-            pages = [request.session['ctn']]  # just the first page
+            pages = [request.session['ctn']]
             request.session['ctn'] = request.session['ctn']+1
-            extracted_text = extract_text(local_pdf_filename, "", pages)
+            extracted_text = high_level.extract_text(local_pdf_filename, "", pages)
             text = extracted_text.split('\n')
             if (len(text) == 1):
                 break
             for i in text:
-                z = re.findall("[0-9]{11}", i)
+                print(i)
+                z = re.findall("[0-9]+", i)
                 if (len(z) > 0):
-                    request.session['rno'].append(z)
+                    request.session['rno'].append(int(z[-1]))
+                    print(z,int(z[-1]))
                 z = re.findall("[A-z]", i)
                 if (len(z) > 0 and "".join(z[-2:]) != 'AM'):
                     z = "".join(z)
                     z = z.lower()
                     request.session['name'].append(z)
-
                 elif (len(z) > 0 and "".join(z[-2:]) == 'AM'):
                     z = "".join(z[:-2])
                     z = z.lower()
                     request.session['name'].append(z)
-        print(request.session['name'])
+
         for i in clas:
-            s = [i.rno]
+            s = int(i.rno)
+            print(s,request.session['rno'])
             k = i.name
             k = k.replace(" ", "")
             k = k.lower()
@@ -111,23 +98,13 @@ def printa(request, pk):
             c_id = i.cid.id
             if (s in request.session['rno'] and d == str(request.user) and c_id == int(decrypt(pk))):
                 i.mark = i.mark+1
-                # print(i.mark)
                 i.save()
             if (k in request.session['name'] and d == str(request.user) and c_id == int(decrypt(pk))):
                 i.smark = i.smark+1
                 i.save()
-
-        # print(rno,name)
-        # place = Postpdf.objects.get(pdf=fie)
-        # print(place.id)
         instance = Postpdf.objects.get(id=sid)
         instance.delete()
         return redirect('/detail/'+str(pk))
-        return render(request, "meetatt/display.html", {
-            "rno": rno,
-            "name": name,
-            "clas": clas
-        })
 
 
 def register(request):
@@ -141,11 +118,11 @@ def register(request):
 
 def validate_regestration(request):
     if request.method == "POST":
-        name = request.POST.get('name')
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        phno = request.POST.get('phno')
-        password = request.POST.get('Password')
+        name = request.POST.get('register_name')
+        username = request.POST.get('register_username')
+        email = request.POST.get('register_email')
+        phno = request.POST.get('register_phno')
+        password = request.POST.get('register_password')
         request.session['passw'] = password
         num_results = Contact.objects.filter(email=email).count()
         num_results2 = User.objects.filter(username=username).count()

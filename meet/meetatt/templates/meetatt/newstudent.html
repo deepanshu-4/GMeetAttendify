@@ -1,12 +1,7 @@
 <html>
 <title></title>
-
 <head>
-    {% comment %}
-    <meta http-equiv="refresh" content="0;URL='http://www.google.com/'" />
-    {% endcomment %} {% comment %}
-    <meta http-equiv="refresh" content="1200" />
-    {% endcomment %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
         pre {
             display: inline;
@@ -15,11 +10,11 @@
 </head>
 
 <body>
-    <a href="{%url 'meetatt:main' %}">GO to back</a>
+    <a href="{%url 'meetatt:index' %}"> <span>&#8592;</span> Back</a><br />
     <center>
         <fieldset>
             <form>
-                <input required type="text" placeholder="enter total no of Students" name="i" />
+                <input required type="text" placeholder="Enter total No of Students" name="i" />
             </form>
 
             <form class="fo" action="" method="POST">

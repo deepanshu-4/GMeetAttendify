@@ -1,7 +1,9 @@
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title></title>
 <script type="text/javascript">
+
   
   if(performance.navigation.type == 2){
    window.location.reload(true);
@@ -15,7 +17,6 @@ form{
 }
 input{
     text-align:center;
-    
     background-color: cadetblue;
     font-size: 20px;
     color: aliceblue;
@@ -65,8 +66,7 @@ th, td {
 </head>
 <body>
 <h4> Hello {{user.username}} </h4>
-<a href="{%url 'meetatt:head' %}" >GO to back</a>
-
+<a href="{%url 'meetatt:index' %}"> <span>&#8592;</span> Back</a><br />
 <center>
 <form action="{%url 'meetatt:printa' pk  %}" method="POST" enctype="multipart/form-data">
        {% csrf_token %}
@@ -88,9 +88,7 @@ th, td {
 
 
     {% for i in clas %}
-         
         {% if user.username == i.tid.username and i.cid.id == xpk  %}
-
             <tr>
                 <td>{{i.rno}}</td>
                 <td>{{i.name}}</td>

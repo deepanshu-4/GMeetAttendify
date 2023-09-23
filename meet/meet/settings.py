@@ -82,7 +82,7 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     # }
-    "default": dj_database_url.parse('postgres://test_db_jy1b_user:xLDGSKchZ6qwFSoZS4MJzElMy7HOgOWL@dpg-cjrml5lhe99c73crbju0-a.oregon-postgres.render.com/test_db_jy1b')
+    "default": dj_database_url.parse('postgres://testdb_t2zs_user:9aTHyaORco5x2RHxZDd7sztm9protYBU@dpg-ck7h3rfq54js73fh9fcg-a.oregon-postgres.render.com/testdb_t2zs')
 }
 
 

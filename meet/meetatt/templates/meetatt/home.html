@@ -1,118 +1,134 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
+  <head>
+    <!-- <meta http-equiv="refresh" content="5"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <title></title>
 
-<head>
-  <!-- <meta http-equiv="refresh" content="5"> -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="{% static 'index.css' %}">
+    <style>
+      body {
+        margin: 10px;
+        padding: 10px;
+      }
+      nav ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+      }
+      nav ul li {
+        margin-left: 12px;
+        font-size: 20px;
+        margin-right: 5px;
+        padding: 3px;
+      }
+      .tp {
+        text-align: center;
+        box-shadow: 0px 1px 5px 3px;
+      }
 
-  <title></title>
+      .tp h1 {
+        color: brown;
+        font-style: oblique;
+      }
+      #about {
+        margin-left: 16px;
+        padding: 20px;
+      }
+      #about li {
+        list-style-type: disclosure-closed;
+        line-height: 36px;
+      }
+    </style>
+  </head>
 
-
-  <style>
-    body{
-      margin:10px;
-      padding:10px;
-    }
-nav ul {
-list-style: none;
-padding: 0;
-display: flex;
-justify-content: center;
-}
-nav ul li{
-  margin-left: 12px;
-  font-size: 20px;
-  margin-right: 5px;
-  padding: 3px;
-}
-.tp{
-  text-align: center;
-  box-shadow: 0px 1px 5px 3px;
-}
-
-.tp h1 {
-    color: brown;
-    font-style: oblique;
-}
-#about{
-  padding-top:5px;
-}
-
-  </style>
-</head>
-
-<body>
-  <div>
-    {%for mes in messages%}
-    <div class="alert alert-success alert-dismissible">
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
-      <strong>{{mes}}</strong>
-    </div>
-    {%endfor%}
+  <body>
+    <div>
+      {%for mes in messages%}
+      <div class="alert alert-success alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">
+          &times;
+        </button>
+        <strong>{{mes}}</strong>
+      </div>
+      {%endfor%}
 
       <div class="tp">
-      <h1>Google Meet Attendence Management </h1>
-   
-    <div>
-    <nav class="snav">
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="#mn">About</a></li>
-        {%if user != ""%}
-        <li><a href="/head">Dashboard</a></li>
-        <li class="mb"><a href="/logout">Logout</a></li>
-        {%else%}
-        <li class="mb"><a href="/register">Register</a></li>
-        <li class="mb"><a href="/login">Login</a></li>
-        {%endif%}
-      </ul>
-    </nav>
-  </div>
-</div>
+        <h1>Google Meet Attendence Management</h1>
 
-    <div id="about">
-      <div class="main">
-        <h2>How to use application</h2>
-        <ol class="ol">
-          <li>Download the chrome extension<strong>(Google Meet Attendence Collector)</strong>
-          <li>Generate the pdf containing the studnet name using extension</li>
-          <li>Register on website</li>
-          <li>After login add the students</li>
-          <li>Upload the pdf. Then attendence will automatically stored</li>
-        </ol>
-        </p>
+        <div>
+          <nav class="snav">
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="#mn">About</a></li>
+              {%if user != ""%}
+              <li><a href="/head">Dashboard ({{user}})</a></li>
+              <li class="mb"><a href="/logout">Logout</a></li>
+              {%else%}
+              <li class="mb"><a href="/register">Register</a></li>
+              <li class="mb"><a href="/login">Login</a></li>
+              {%endif%}
+            </ul>
+          </nav>
+        </div>
       </div>
-      <div class="main">
-        <h2>How to use extension</h2>
-        <a href="#">Extension Link</a>
-        <ol class="ol">
-          <li>Download the chrome extension<strong>(Google Meet Attendence Collector)</strong>
-          <li>Generate the pdf containing the studnet name using extension</li>
-          <li>Extension can fetch name of the student from google meet</li>
-          <li>It can also fetch data from chat window.So by typing rno in chat window it can easily maintained the
-            attendence by rno</li>
-          <li>Upload the pdf. Then attendence will automatically stored</li>
-        </ol>
+
+      <div id="about">
+        <div class="main">
+          <h2>How to use application :-</h2>
+          <ul>
+            <li>
+              Download the chrome extension<strong
+                >(Google Meet Attendence Collector)</strong
+              >
+            </li>
+            <li>
+              Generate the pdf containing the studnet name using extension
+            </li>
+            <li>Register on website</li>
+            <li>After login add the students</li>
+            <li>Upload the pdf. Then attendence will automatically stored</li>
+          </ul>
+        </div>
+        <div class="main">
+          <h2>How to use extension :-</h2>
+          <a href="#">Extension Link</a>
+          <ul>
+            <li>
+              Download the chrome extension<strong
+                >(Google Meet Attendence Collector)</strong
+              >
+            </li>
+            <li>
+              Generate the pdf containing the studnet name using extension
+            </li>
+            <li>Extension can fetch name of the student from google meet</li>
+            <li>
+              It can also fetch data from chat window.So by typing rno in chat
+              window it can easily maintained the attendence by rno
+            </li>
+            <li>Upload the pdf. Then attendence will automatically stored</li>
+          </ul>
+        </div>
+        <div class="main">
+          <p>
+            By using our site you can maintain the attendence of student easily
+          </p>
+        </div>
       </div>
-      <div class="main">
-        <p>By using our site you can maintain the attendence of studenet easily</p>
-      </div>
+      <footer>Designed and Developed by Deepanshu Kaushik</footer>
     </div>
-    <footer>
-      Designed and Developed by Deepanshu Kaushik
-
-    </footer>
-
-  </div>
-
-
-</body>
-
+  </body>
 </html>
