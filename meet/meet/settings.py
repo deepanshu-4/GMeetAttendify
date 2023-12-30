@@ -16,13 +16,12 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'e@a3r$g!w80^%w+=tqe!4c^u8t8%**&hch321ok=p$l%_&jh&&'
 ENCRYPT_KEY=b'S3LGKQ0kI2MljlMm8dksok9lPU69h_nGUFlOP7k3fVQ='
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -82,7 +81,7 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     # }
-    "default": dj_database_url.parse('postgres://testdb_t2zs_user:9aTHyaORco5x2RHxZDd7sztm9protYBU@dpg-ck7h3rfq54js73fh9fcg-a.oregon-postgres.render.com/testdb_t2zs')
+    "default": dj_database_url.parse(os.environ.get('DATABASE_KEY'))
 }
 
 
